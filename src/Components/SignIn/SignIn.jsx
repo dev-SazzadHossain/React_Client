@@ -1,40 +1,34 @@
-import { Button, Input } from "@headlessui/react";
-import React, { useEffect, useState } from "react";
-import CustomButton from "../../Custome/CustomButton";
-import { useFormik } from "formik";
-import { signUpValidation } from "../Validation/SignUpValidation";
+import React, { useState } from "react";
 import GoogleButton from "../../Custome/GoogleButton";
 import { Link } from "react-router-dom";
+import { Button, Input } from "@headlessui/react";
+import { useFormik } from "formik";
 
-const SignUp = () => {
+const SignIn = () => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const initialValues = {
-    username: "",
     email: "",
     password: "",
   };
   const userInfo = useFormik({
     initialValues,
-    validationSchema: signUpValidation,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       handelSubmit();
     },
   });
 
-  const handelSubmit = (e, resetForm) => {
+  const handelSubmit = (e) => {
     setError("");
+
     if (
-      [
-        userInfo.values.username,
-        userInfo.values.email,
-        userInfo.values.password,
-      ].some((filed) => filed.trim() == "")
+      [userInfo.values.email, userInfo.values.password].some(
+        (filed) => filed.trim() == ""
+      )
     ) {
       return setError("All files are required");
     }
   };
-
   return (
     <div className="flex justify-center items-center w-full h-screen lg:px-0 px-10">
       <form
@@ -44,27 +38,6 @@ const SignUp = () => {
         <h3 className="text-3xl text-center tracking-tighter font-semibold group-hover/main:tracking-wide transition-all duration-300 pb-5">
           Sign Up
         </h3>
-
-        {/* INPUT FORM */}
-        <div className="relative">
-          <Input
-            name="username"
-            value={userInfo?.values.username}
-            onChange={userInfo.handleChange}
-            placeholder="Enter Your Username"
-            type="text"
-            className="w-full border-none outline-none shadow-sm py-2 px-2 rounded-md focus:ring-2 focus:ring-blue-300/65"
-          />
-          <div className=" absolute top-1/2 -translate-y-1/2 right-1 text-lg">
-            🧑🏻‍💼
-          </div>
-        </div>
-        {userInfo?.touched?.username && userInfo.errors.username && (
-          <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
-            {userInfo?.errors?.username}
-          </p>
-        )}
-        {/* INPUT FORM */}
 
         {/* EMAIL */}
         <div className="py-5">
@@ -82,11 +55,7 @@ const SignUp = () => {
               📑
             </div>
           </div>
-          {userInfo?.touched?.email && userInfo.errors.email && (
-            <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
-              {userInfo?.errors?.email}
-            </p>
-          )}
+
           {/* INPUT FORM */}
         </div>
 
@@ -120,11 +89,7 @@ const SignUp = () => {
               </div>
             )}
           </div>
-          {userInfo?.touched?.password && userInfo.errors.password && (
-            <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
-              {userInfo?.errors?.password}
-            </p>
-          )}
+
           {/* INPUT FORM */}
         </div>
 
@@ -140,25 +105,25 @@ const SignUp = () => {
             type="submit"
             className={`rounded bg-sky-600 py-2 px-10 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 `}
           >
-            Sign Up
+            Sign In
           </Button>
         </div>
         {/* BUTTON */}
 
         {/* GOOGLE BUTTON */}
-        <GoogleButton text="sign up" />
+        <GoogleButton text="sign in" />
         {/* GOOGLE BUTTON */}
 
         {/* SIGN IN LINK */}
         <span className="flex justify-end items-center gap-2 pt-5">
           <small className=" text-[11px] text-pink-400 font-semibold">
-            Already Have An Account
+            Are You New Here
           </small>{" "}
           <Link
-            to="/signIn"
+            to="/"
             className=" hover:text-blue-400 transition-all duration-300 flex items-center justify-center gap-1 group"
           >
-            Sign In{" "}
+            Sign Up{" "}
             <span className=" opacity-0 group-hover:opacity-100 transition-all duration-300">
               ➡️
             </span>
@@ -170,4 +135,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
