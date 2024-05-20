@@ -1,4 +1,4 @@
-import { Input } from "@headlessui/react";
+import { Button, Input } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import CustomButton from "../../Custome/CustomButton";
 import { useFormik } from "formik";
@@ -15,10 +15,12 @@ const SignUp = () => {
   const userInfo = useFormik({
     initialValues,
     validationSchema: signUpValidation,
-    onSubmit: (values) => {},
+    onSubmit: (values, { resetForm }) => {
+      handelSubmit();
+    },
   });
 
-  const handelSubmit = (e) => {
+  const handelSubmit = (e, resetForm) => {
     setError("");
     e.preventDefault();
 
@@ -33,11 +35,6 @@ const SignUp = () => {
     }
   };
 
-  useEffect(() => {
-    if (Object.keys(userInfo?.errors).length > 0) {
-      setError("");
-    }
-  }, [Object.keys(userInfo?.errors).length]);
   return (
     <div className="flex justify-center items-center w-full h-screen lg:px-0 px-10">
       <form
@@ -62,7 +59,7 @@ const SignUp = () => {
             🧑🏻‍💼
           </div>
         </div>
-        {userInfo.errors.username && (
+        {userInfo?.touched?.username && userInfo.errors.username && (
           <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
             {userInfo?.errors?.username}
           </p>
@@ -85,7 +82,7 @@ const SignUp = () => {
               📑
             </div>
           </div>
-          {userInfo.errors.email && (
+          {userInfo?.touched?.email && userInfo.errors.email && (
             <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
               {userInfo?.errors?.email}
             </p>
@@ -123,7 +120,7 @@ const SignUp = () => {
               </div>
             )}
           </div>
-          {userInfo.errors.password && (
+          {userInfo?.touched?.password && userInfo.errors.password && (
             <p className=" text-red-400/80 font-semibold text-sm pt-1 ">
               {userInfo?.errors?.password}
             </p>
@@ -139,15 +136,17 @@ const SignUp = () => {
         {/* PASSWORD */}
         {/*BUTTON */}
         <div className="pt-5 flex justify-center items-center">
-          <CustomButton
-            onClick={handelSubmit}
+          <Button
             type="submit"
-            disabled={Object.keys(userInfo?.errors).length > 0 ? true : false}
+            className={`rounded bg-sky-600 py-2 px-10 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 `}
           >
             Sign Up
-          </CustomButton>
+          </Button>
         </div>
         {/* BUTTON */}
+
+        {/* GOOGLE BUTTON */}
+        {/* GOOGLE BUTTON */}
       </form>
     </div>
   );
