@@ -4,11 +4,23 @@ import CustomButton from "../../Custome/CustomButton";
 import { useFormik } from "formik";
 import { signUpValidation } from "../Validation/SignUpValidation";
 import GoogleButton from "../../Custome/GoogleButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useSignInMutation,
+  useSignUpMutation,
+} from "../../Features/api/Auth/authApi";
+import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { logged } from "../../Features/api/Auth/authSlice";
 
 const SignUp = () => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+  const [signUp, { data, isError, isSuccess, isLoading, error: dataError }] =
+    useSignUpMutation();
+  const [signIn, { data: signInData }] = useSignInMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const initialValues = {
     username: "",
     email: "",
@@ -33,8 +45,42 @@ const SignUp = () => {
     ) {
       return setError("All files are required");
     }
+
+    signUp({
+      username: userInfo.values.username,
+      email: userInfo.values.email,
+      password: userInfo.values.password,
+    });
   };
 
+  useEffect(() => {
+    if (data?.success === true) {
+      signIn({
+        email: userInfo?.values?.email,
+        password: userInfo?.values?.password,
+      });
+
+      toast.success(data?.message);
+    } else {
+      toast.error(data?.message);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (signInData?.success === true) {
+      localStorage.setItem(
+        "refreshToken",
+        JSON.stringify(signInData?.refreshToken)
+      );
+      localStorage.setItem("authUser", JSON.stringify(signInData?.data));
+      dispatch(
+        logged({ success: signInData?.success, data: signInData?.data })
+      );
+      navigate("/home");
+      userInfo.resetForm();
+      setError("");
+    }
+  }, [signInData?.refreshToken]);
   return (
     <div className="flex justify-center items-center w-full h-screen lg:px-0 px-10">
       <form
@@ -137,10 +183,11 @@ const SignUp = () => {
         {/*BUTTON */}
         <div className="pt-5 flex justify-center items-center">
           <Button
+            disabled={isLoading}
             type="submit"
             className={`rounded bg-sky-600 py-2 px-10 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 `}
           >
-            Sign Up
+            {isLoading ? "Loading..." : " Sign Up"}
           </Button>
         </div>
         {/* BUTTON */}

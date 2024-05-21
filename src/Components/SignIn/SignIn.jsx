@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoogleButton from "../../Custome/GoogleButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Input } from "@headlessui/react";
 import { useFormik } from "formik";
+import { useSignInMutation } from "../../Features/api/Auth/authApi";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { logged } from "../../Features/api/Auth/authSlice";
 
 const SignIn = () => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+  const [signIn, { data: signInData, isLoading }] = useSignInMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const initialValues = {
     email: "",
     password: "",
@@ -28,7 +35,24 @@ const SignIn = () => {
     ) {
       return setError("All files are required");
     }
+    signIn({
+      email: userInfo?.values?.email,
+      password: userInfo?.values?.password,
+    });
   };
+
+  useEffect(() => {
+    if (signInData?.success === true) {
+      dispatch(
+        logged({ success: signInData?.success, data: signInData?.data })
+      );
+      localStorage.setItem("authUser", JSON.stringify(signInData?.data));
+      toast.success(signInData?.message);
+      navigate("/home");
+    } else {
+      toast.error(signInData?.message);
+    }
+  }, [signInData]);
   return (
     <div className="flex justify-center items-center w-full h-screen lg:px-0 px-10">
       <form
@@ -102,10 +126,11 @@ const SignIn = () => {
         {/*BUTTON */}
         <div className="pt-5 flex justify-center items-center">
           <Button
+            disabled={isLoading}
             type="submit"
             className={`rounded bg-sky-600 py-2 px-10 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 `}
           >
-            Sign In
+            {isLoading ? "Loading..." : "Sign In"}
           </Button>
         </div>
         {/* BUTTON */}
