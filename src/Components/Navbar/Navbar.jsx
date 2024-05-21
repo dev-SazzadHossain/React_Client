@@ -39,7 +39,7 @@ const Navbar = () => {
   }, [widthSize]);
 
   return (
-    <div className=" relative w-full shadow-lg shadow-violet-400 drop-shadow-lg">
+    <div className=" z-50 w-full shadow-lg shadow-violet-400 drop-shadow-lg">
       <div className="xl:w-[1520px] xl:mx-auto lg:w-[1320px] lg:mx-auto md:w-full sm:w-full w-full xl:px-0 lg:px-0 px-5">
         {/* <motion.div
           // initial={{ boxShadow: "1px 6px 5px  4px blue" }}
@@ -68,7 +68,7 @@ const Navbar = () => {
             stiffness: 320,
             duration: 10,
           }}
-          className="container mx-auto lg:px-0 md:px-0 sm:px-3 px-3"
+          className=""
         >
           <div className=" bg-inherit flex justify-between items-center py-2   font-Poppins cursor-pointer">
             <motion.a

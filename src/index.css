@@ -7,6 +7,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+html {
+  scrollbar-width: thin;
+}
 
 body {
   font-family: "Open Sans", sans-serif;
